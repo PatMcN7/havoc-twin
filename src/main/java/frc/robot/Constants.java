@@ -36,4 +36,5 @@ public final class Constants {
   }
 
   public static final boolean tuningMode = false;
+  public static final String LIMELIGHT_NAME = null;
 }
