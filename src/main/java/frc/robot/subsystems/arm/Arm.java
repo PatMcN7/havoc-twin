@@ -5,6 +5,10 @@
 package frc.robot.subsystems.arm;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import org.littletonrobotics.junction.Logger;
@@ -12,9 +16,14 @@ import org.littletonrobotics.junction.Logger;
 public class Arm extends SubsystemBase {
   private final ArmIO io;
   private final ArmIOInputsAutoLogged inputs = new ArmIOInputsAutoLogged();
-
+  private final MechanismLigament2d armLigament;
   /** Creates a new Arm. */
   public Arm(ArmIO io) {
+    Mechanism2d armSim = new Mechanism2d(1, 4);
+    MechanismRoot2d armSimRoot = armSim.getRoot("Arm", 0, 0);
+    armLigament = new MechanismLigament2d("Arm", 10, 180);
+    armSimRoot.append(armLigament);
+
     this.io = io;
     switch (Constants.currentMode) {
       case REAL:
@@ -26,8 +35,11 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
     io.updateInputs(inputs);
     Logger.processInputs("Arm", inputs);
+
+    armLigament.setAngle(new Rotation2d(inputs.postionDeg));
   }
 
   public void runVolts(double volts) {
