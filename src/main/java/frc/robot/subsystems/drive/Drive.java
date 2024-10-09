@@ -44,8 +44,8 @@ import org.littletonrobotics.junction.Logger;
 
 public class Drive extends SubsystemBase {
   private static final double MAX_LINEAR_SPEED = Units.feetToMeters(14.5);
-  private static final double TRACK_WIDTH_X = Units.inchesToMeters(25.0);
-  private static final double TRACK_WIDTH_Y = Units.inchesToMeters(25.0);
+  private static final double TRACK_WIDTH_X = Units.inchesToMeters(24.25);
+  private static final double TRACK_WIDTH_Y = Units.inchesToMeters(24.25);
   private static final double DRIVE_BASE_RADIUS =
       Math.hypot(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0);
   private static final double MAX_ANGULAR_SPEED = MAX_LINEAR_SPEED / DRIVE_BASE_RADIUS;
@@ -223,16 +223,10 @@ public class Drive extends SubsystemBase {
     stop();
   }
 
-  public Command pathfind(Pose2d pose) {
+  public Command pathfind(Pose2d targetPose) {
     PathConstraints constraints =
         new PathConstraints(3.0, 4.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
-    return AutoBuilder.pathfindToPose(
-        pose,
-        constraints,
-        0.0, // Goal end velocity in meters/sec
-        0.0 // Rotation delay distance in meters. This is how far the robot should travel before
-        // attempting to rotate.
-        );
+    return AutoBuilder.pathfindToPose(targetPose, constraints);
   }
   /** Returns a command to run a quasistatic test in the specified direction. */
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {

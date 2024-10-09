@@ -7,7 +7,7 @@ public interface ArmIO {
   @AutoLog
   public class ArmIOInputs {
     public double postionDeg = 0.0;
-    public double velocityDegPerSec = 0.0;
+    public double velocityDegPerSec = 0.0; // Degrees,
     public double voltageOut = 0.0;
     public double currentAmps = 0.0;
     public double temperature = 0.0;

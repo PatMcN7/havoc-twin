@@ -23,20 +23,13 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.Testall;
-import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.arm.ArmIOTalonFX;
 import frc.robot.subsystems.beltwrap.Beltwrap;
 import frc.robot.subsystems.beltwrap.BeltwrapIOSparkMax;
-import frc.robot.subsystems.cartridge.Cartridge;
-import frc.robot.subsystems.cartridge.CartridgeIOSparkMax;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIOTalonFX;
-import frc.robot.subsystems.uptake.Uptake;
-import frc.robot.subsystems.uptake.UptakeIOTalonFX;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -49,10 +42,10 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Shooter shooter;
-  private final Cartridge cartridge;
-  private final Uptake uptake;
+  // private final Cartridge cartridge;
+  // private final Uptake uptake;
   private final Beltwrap beltwrap;
-  private final Arm arm;
+  // private final Arm arm;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -75,10 +68,10 @@ public class RobotContainer {
                 new ModuleIOTalonFX(2),
                 new ModuleIOTalonFX(3));
         shooter = new Shooter(new ShooterIOTalonFX());
-        cartridge = new Cartridge(new CartridgeIOSparkMax());
-        uptake = new Uptake(new UptakeIOTalonFX());
+        // cartridge = new Cartridge(new CartridgeIOSparkMax());
+        // uptake = new Uptake(new UptakeIOTalonFX());
         beltwrap = new Beltwrap(new BeltwrapIOSparkMax());
-        arm = new Arm(new ArmIOTalonFX());
+        // arm = new Arm(new ArmIOTalonFX());
 
         // drive = new Drive(
         // new GyroIOPigeon2(true),
@@ -107,10 +100,10 @@ public class RobotContainer {
                 new ModuleIOTalonFX(2),
                 new ModuleIOTalonFX(3));
         shooter = new Shooter(new ShooterIOTalonFX());
-        cartridge = new Cartridge(new CartridgeIOSparkMax());
-        uptake = new Uptake(new UptakeIOTalonFX());
+        // cartridge = new Cartridge(new CartridgeIOSparkMax());
+        // uptake = new Uptake(new UptakeIOTalonFX());
         beltwrap = new Beltwrap(new BeltwrapIOSparkMax());
-        arm = new Arm(new ArmIOTalonFX());
+        // arm = new Arm(new ArmIOTalonFX());
         break;
 
       default:
@@ -131,10 +124,10 @@ public class RobotContainer {
                 new ModuleIOTalonFX(2),
                 new ModuleIOTalonFX(3));
         shooter = new Shooter(new ShooterIOTalonFX());
-        cartridge = new Cartridge(new CartridgeIOSparkMax());
-        uptake = new Uptake(new UptakeIOTalonFX());
+        // cartridge = new Cartridge(new CartridgeIOSparkMax());
+        // uptake = new Uptake(new UptakeIOTalonFX());
         beltwrap = new Beltwrap(new BeltwrapIOSparkMax());
-        arm = new Arm(new ArmIOTalonFX());
+        // arm = new Arm(new ArmIOTalonFX());
         break;
     }
 
@@ -180,7 +173,7 @@ public class RobotContainer {
                             new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                     drive)
                 .ignoringDisable(true));
-    controller.a().whileTrue(new Testall(beltwrap, uptake, cartridge, shooter, arm));
+    // controller.a().whileTrue(new Testall(beltwrap, uptake, cartridge, shooter, arm));
   }
 
   /**

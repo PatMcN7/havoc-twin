@@ -8,9 +8,10 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.util.Units;
 
 public class ArmIOTalonFX implements ArmIO {
-  private static final double GEAR_RATIO = 0.0;
+  private static final double GEAR_RATIO = 1 / 9;
   private final TalonFX arm = new TalonFX(0, "CANivore");
   private final MotionMagicVoltage mRequest = new MotionMagicVoltage(0);
 
@@ -27,7 +28,7 @@ public class ArmIOTalonFX implements ArmIO {
   @Override
   public void updateInputs(ArmIOInputs inputs) {
     inputs.currentAmps = arm.getStatorCurrent().getValueAsDouble();
-    inputs.postionDeg = arm.getPosition().getValueAsDouble() * GEAR_RATIO;
+    inputs.postionDeg = Units.rotationsToDegrees(arm.getPosition().getValueAsDouble() * GEAR_RATIO);
     inputs.temperature = arm.getDeviceTemp().getValueAsDouble();
     inputs.voltageOut = arm.getMotorVoltage().getValueAsDouble();
     inputs.velocityDegPerSec = arm.getVelocity().getValueAsDouble() * GEAR_RATIO;

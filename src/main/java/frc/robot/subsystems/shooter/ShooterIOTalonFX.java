@@ -10,8 +10,8 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 public class ShooterIOTalonFX implements ShooterIO {
   private static double SHOOTER_RATIO = 1.5;
 
-  private final TalonFX left = new TalonFX(1, "CANivore");
-  private final TalonFX right = new TalonFX(0, "CANivore");
+  private final TalonFX left = new TalonFX(19, "CANIVORE 3");
+  private final TalonFX right = new TalonFX(18, "CANIVORE 3");
 
   public ShooterIOTalonFX() {
     var config = new TalonFXConfiguration();
