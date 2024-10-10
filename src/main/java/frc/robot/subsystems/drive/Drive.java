@@ -302,4 +302,9 @@ public class Drive extends SubsystemBase {
       new Translation2d(-TRACK_WIDTH_X / 2.0, -TRACK_WIDTH_Y / 2.0)
     };
   }
+
+  public ChassisSpeeds getChassisSpeeds(){
+    return kinematics.toChassisSpeeds(getModuleStates());
+  }
+
 }
