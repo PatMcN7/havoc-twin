@@ -17,6 +17,8 @@ public class Arm extends SubsystemBase {
   private final ArmIO io;
   private final ArmIOInputsAutoLogged inputs = new ArmIOInputsAutoLogged();
   private final MechanismLigament2d armLigament;
+  private static Arm instance;
+
   /** Creates a new Arm. */
   public Arm(ArmIO io) {
     Mechanism2d armSim = new Mechanism2d(1, 4);
@@ -29,6 +31,20 @@ public class Arm extends SubsystemBase {
       case REAL:
         io.configurePID(0, 0, 0, 0, 0, 0);
         io.configureMotionMagic(0, 0, 0);
+    }
+  }
+
+  public static Arm getInstance() {
+    if (instance == null) {
+      if (Constants.currentMode.equals(Constants.Mode.REAL)) {
+        return instance = new Arm(new ArmIOTalonFX());
+      } else if (Constants.currentMode.equals(Constants.Mode.SIM)) {
+        return instance = new Arm(new ArmIOSim());
+      } else {
+        return instance;
+      }
+    } else {
+      return instance;
     }
   }
 

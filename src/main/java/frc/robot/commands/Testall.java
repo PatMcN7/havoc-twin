@@ -43,8 +43,7 @@ public class Testall extends Command {
     beltwrap.runVolts(12.0);
     uptake.runVolts(12.0);
     cartridge.runVolts(12.0);
-    shooter.setLeftVoltage(5.0);
-    shooter.setRightVoltage(5.0);
+    shooter.setVoltage(5., 5.);
   }
 
   // Called once the command ends or is interrupted.

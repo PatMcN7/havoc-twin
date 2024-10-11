@@ -11,7 +11,7 @@ import org.littletonrobotics.junction.Logger;
 public class Beltwrap extends SubsystemBase {
   private final BeltwrapIO io;
   private final BeltwrapIOInputsAutoLogged inputs = new BeltwrapIOInputsAutoLogged();
-
+  private static Beltwrap instance;
   /** Creates a new Beltwrap. */
   public Beltwrap(BeltwrapIO io) {
     this.io = io;
@@ -19,6 +19,20 @@ public class Beltwrap extends SubsystemBase {
       case REAL:
       case REPLAY:
       case SIM:
+    }
+  }
+
+  public static Beltwrap getInstance() {
+    if (instance == null) {
+      if (Constants.currentMode.equals(Constants.Mode.REAL)) {
+        return instance = new Beltwrap(new BeltwrapIOSparkMax());
+      } else if (Constants.currentMode.equals(Constants.Mode.SIM)) {
+        return instance = new Beltwrap(new BeltwrapIOSim());
+      } else {
+        return instance;
+      }
+    } else {
+      return instance;
     }
   }
 

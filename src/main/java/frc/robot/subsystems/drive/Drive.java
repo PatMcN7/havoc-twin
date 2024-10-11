@@ -303,8 +303,7 @@ public class Drive extends SubsystemBase {
     };
   }
 
-  public ChassisSpeeds getChassisSpeeds(){
+  public ChassisSpeeds getChassisSpeeds() {
     return kinematics.toChassisSpeeds(getModuleStates());
   }
-
 }

@@ -7,6 +7,7 @@ import org.littletonrobotics.junction.Logger;
 public class Cartridge extends SubsystemBase {
   private final CartridgeIO io;
   private final CartridgeIOInputsAutoLogged inputs = new CartridgeIOInputsAutoLogged();
+  private static Cartridge instance;
 
   public Cartridge(CartridgeIO io) {
     this.io = io;
@@ -14,6 +15,19 @@ public class Cartridge extends SubsystemBase {
       case REAL:
       case REPLAY:
       case SIM:
+    }
+  }
+
+  public static Cartridge getInstance() {
+    if (instance == null) {
+      if (Constants.currentMode.equals(Constants.Mode.REAL)) {
+        return instance = new Cartridge(new CartridgeIOSparkMax());
+      } else if (Constants.currentMode.equals(Constants.Mode.SIM)) {
+        return instance = new Cartridge(new CartridgeIOSim());
+      }
+      return instance;
+    } else {
+      return instance;
     }
   }
 

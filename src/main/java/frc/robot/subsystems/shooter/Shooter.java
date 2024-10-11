@@ -9,6 +9,7 @@ public class Shooter extends SubsystemBase {
   LoggedTunableNumber kP = new LoggedTunableNumber("Shooter/kP", 1.0);
   private final ShooterIO io;
   private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
+  private static Shooter instance;
   // private final SysIdRoutine sysId;
 
   public Shooter(ShooterIO io) {
@@ -29,25 +30,32 @@ public class Shooter extends SubsystemBase {
 
   }
 
+  public static Shooter getInstance() {
+    if (instance == null) {
+      if (Constants.currentMode.equals(Constants.Mode.REAL)) {
+        return instance = new Shooter(new ShooterIOTalonFX());
+      } else if (Constants.currentMode.equals(Constants.Mode.REAL)) {
+        return instance = new Shooter(new ShooterIOSim());
+      }
+
+      return instance;
+    } else {
+      return instance;
+    }
+  }
+
   @Override
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Shooter", inputs);
   }
 
-  public void setRightVoltage(double volts) {
-    io.setRightVoltage(volts);
+  public void setVoltage(double leftVolts, double rightVolts) {
+    io.setVoltage(leftVolts, rightVolts);
+    ;
   }
 
-  public void setLeftVoltage(double volts) {
-    io.setLeftVoltage(volts);
-  }
-
-  public void setRightRPM(double RPM) {
-    io.setRightRPM(RPM);
-  }
-
-  public void setLeftRPM(double RPM) {
-    io.setLeftRPM(RPM);
+  public void setRPM(double leftRPM, double rightRPM) {
+    io.setRPM(leftRPM, rightRPM);
   }
 }
