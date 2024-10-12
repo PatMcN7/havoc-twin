@@ -15,7 +15,7 @@ public class Shooter extends SubsystemBase {
   public Shooter(ShooterIO io) {
     switch (Constants.currentMode) {
       case REAL:
-        io.configureGains(0., 0., 0., 0., 0.);
+        io.configureGains(.28, 0.12, 0.12, 0., 0.);
     }
 
     this.io = io;
@@ -34,11 +34,13 @@ public class Shooter extends SubsystemBase {
     if (instance == null) {
       if (Constants.currentMode.equals(Constants.Mode.REAL)) {
         return instance = new Shooter(new ShooterIOTalonFX());
-      } else if (Constants.currentMode.equals(Constants.Mode.REAL)) {
-        return instance = new Shooter(new ShooterIOSim());
-      }
+      } else if (Constants.currentMode.equals(Constants.Mode.SIM)) {
+        System.out.println("Shooter works");
 
-      return instance;
+        return instance = new Shooter(new ShooterIOSim());
+      } else {
+        return instance;
+      }
     } else {
       return instance;
     }
@@ -57,5 +59,13 @@ public class Shooter extends SubsystemBase {
 
   public void setRPM(double leftRPM, double rightRPM) {
     io.setRPM(leftRPM, rightRPM);
+  }
+
+  public boolean getLeftAtSetpoint() {
+    return inputs.leftAtVelocity;
+  }
+
+  public boolean getRightAtSetpoint() {
+    return inputs.rightAtVelocity;
   }
 }

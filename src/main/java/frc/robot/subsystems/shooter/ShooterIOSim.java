@@ -5,8 +5,8 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 
 public class ShooterIOSim implements ShooterIO {
-  private FlywheelSim left = new FlywheelSim(DCMotor.getKrakenX60(1), 1.0, 0);
-  private FlywheelSim right = new FlywheelSim(DCMotor.getKrakenX60(1), 1.0, 0);
+  private FlywheelSim left = new FlywheelSim(DCMotor.getKrakenX60(1), 1.0, 1.);
+  private FlywheelSim right = new FlywheelSim(DCMotor.getKrakenX60(1), 1.0, 1.);
   private PIDController leftPID = new PIDController(0, 0, 0);
   private PIDController rightPID = new PIDController(0, 0, 0);
 

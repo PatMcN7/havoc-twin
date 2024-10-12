@@ -11,6 +11,9 @@ public interface ArmIO {
     public double voltageOut = 0.0;
     public double currentAmps = 0.0;
     public double temperature = 0.0;
+    public boolean atPosition;
+    public boolean zeroed = false;
+    public double setpoint = 0.0;
   }
 
   public default void updateInputs(ArmIOInputs inputs) {}
@@ -18,6 +21,8 @@ public interface ArmIO {
   public default void setVoltage(double voltage) {}
 
   public default void setPosition(double position) {}
+
+  public default void zeroArm() {}
 
   public default void configurePID(
       double kS, double kV, double kA, double kP, double kI, double kD) {}

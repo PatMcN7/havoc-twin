@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 
 public class UptakeIOTalonFX implements UptakeIO {
   private final TalonFX uptake = new TalonFX(0);
-  private final DigitalInput beamDIO = new DigitalInput(0);
+  private final DigitalInput beamDIO = new DigitalInput(8);
 
   public UptakeIOTalonFX() {
     var config = new TalonFXConfiguration();

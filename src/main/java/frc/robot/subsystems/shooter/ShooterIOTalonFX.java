@@ -6,6 +6,7 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.math.MathUtil;
 
 public class ShooterIOTalonFX implements ShooterIO {
   private static double SHOOTER_RATIO = 1.5;
@@ -21,6 +22,8 @@ public class ShooterIOTalonFX implements ShooterIO {
 
     left.getConfigurator().apply(config);
     right.getConfigurator().apply(config);
+    left.setInverted(false);
+    right.setInverted(true);
   }
 
   @Override
@@ -29,6 +32,9 @@ public class ShooterIOTalonFX implements ShooterIO {
     inputs.leftCurrentAmps = left.getSupplyCurrent().getValueAsDouble();
     inputs.leftTemperature = left.getDeviceTemp().getValueAsDouble();
     inputs.leftVelocityRPM = left.getVelocity().getValueAsDouble() * 60 * 1.5;
+    inputs.leftAtVelocity = MathUtil.isNear(0.0, left.getClosedLoopError().getValueAsDouble(), 1.5);
+    inputs.rightAtVelocity =
+        MathUtil.isNear(0.0, right.getClosedLoopError().getValueAsDouble(), 1.5);
   }
 
   @Override
@@ -39,8 +45,16 @@ public class ShooterIOTalonFX implements ShooterIO {
 
   @Override
   public void setRPM(double leftRPM, double rightRPM) {
-    left.setControl(new VelocityVoltage(leftRPM).withEnableFOC(false).withSlot(0));
-    right.setControl(new VelocityVoltage(rightRPM).withEnableFOC(false).withSlot(0));
+    left.setControl(
+        new VelocityVoltage(leftRPM / 60.)
+            .withEnableFOC(false)
+            .withSlot(0)
+            .withLimitReverseMotion(true));
+    right.setControl(
+        new VelocityVoltage(rightRPM / 60.)
+            .withEnableFOC(false)
+            .withSlot(0)
+            .withLimitReverseMotion(true));
   }
 
   @Override

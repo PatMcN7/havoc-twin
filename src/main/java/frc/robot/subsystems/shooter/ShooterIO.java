@@ -15,6 +15,9 @@ public interface ShooterIO {
     public double rightVelocityRPM = 0.0;
     public double rightCurrentAmps = 0.0;
     public double rightTemperature = 0.0;
+
+    public boolean rightAtVelocity = false;
+    public boolean leftAtVelocity = false;
   }
 
   public default void updateInputs(ShooterIOInputs inputs) {}

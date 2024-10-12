@@ -14,6 +14,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -21,9 +22,10 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.Testall;
+import frc.robot.commands.Intake;
+import frc.robot.commands.moveArm;
+import frc.robot.commands.shoot;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.beltwrap.Beltwrap;
 import frc.robot.subsystems.cartridge.Cartridge;
@@ -52,24 +54,28 @@ public class RobotContainer {
   // private final Arm arm;
 
   private Drive drive;
-  private final Shooter shooter = Shooter.getInstance();
-  private final Cartridge cartridge = Cartridge.getInstance();
-  private final Uptake uptake = Uptake.getInstance();
-  private final Beltwrap beltwrap = Beltwrap.getInstance();
-  private final Arm arm = Arm.getInstance();
-  // Controller
+  private Shooter shooter = Shooter.getInstance();
+  private Cartridge cartridge = Cartridge.getInstance();
+  private Uptake uptake = Uptake.getInstance();
+  private Beltwrap beltwrap = Beltwrap.getInstance();
+  private Arm arm = Arm.getInstance();
   private final CommandXboxController controller = new CommandXboxController(0);
+  // private final XboxControllerSim simController = new XboxControllerSim(0);
+
+  // Controller
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
-  //   private final LoggedDashboardNumber flywheelSpeedInput =
-  //       new LoggedDashboardNumber("Flywheel Speed", 1500.0);
+  // private final LoggedDashboardNumber flywheelSpeedInput =
+  // new LoggedDashboardNumber("Flywheel Speed", 1500.0);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
+
         drive =
             new Drive(
                 new GyroIOPigeon2(true),
@@ -103,12 +109,12 @@ public class RobotContainer {
                 new ModuleIOSim());
         // // flywheel = new Flywheel(new FlywheelIOSim());
         // drive =
-        //     new Drive(
-        //         new GyroIOPigeon2(false),
-        //         new ModuleIOTalonFX(0),
-        //         new ModuleIOTalonFX(1),
-        //         new ModuleIOTalonFX(2),
-        //         new ModuleIOTalonFX(3));
+        // new Drive(
+        // new GyroIOPigeon2(false),
+        // new ModuleIOTalonFX(0),
+        // new ModuleIOTalonFX(1),
+        // new ModuleIOTalonFX(2),
+        // new ModuleIOTalonFX(3));
         // shooter = new Shooter(new ShooterIOTalonFX());
         // cartridge = new Cartridge(new CartridgeIOSparkMax());
         // uptake = new Uptake(new UptakeIOTalonFX());
@@ -119,12 +125,12 @@ public class RobotContainer {
       default:
         // // Replayed robot, disable IO implementations
         // drive =
-        //     new Drive(
-        //         new GyroIO() {},
-        //         new ModuleIO() {},
-        //         new ModuleIO() {},
-        //         new ModuleIO() {},
-        //         new ModuleIO() {});
+        // new Drive(
+        // new GyroIO() {},
+        // new ModuleIO() {},
+        // new ModuleIO() {},
+        // new ModuleIO() {},
+        // new ModuleIO() {});
         // // flywheel = new Flywheel(new FlywheelIO() {});
         drive =
             new Drive(
@@ -138,25 +144,17 @@ public class RobotContainer {
         // uptake = new Uptake(new UptakeIOTalonFX());
         // beltwrap = new Beltwrap(new BeltwrapIOSparkMax());
         // arm = new Arm(new ArmIOTalonFX());
-        break;
     }
 
-    // Set up auto routines
+    // Set up at routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
-    // Set up SysId routines
-    autoChooser.addOption(
-        "Drive SysId (Quasistatic Forward)",
-        drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
-        "Drive SysId (Quasistatic Reverse)",
-        drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addOption(
-        "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
-        "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // Set up SysId routinChooser.addOption("Drive SysId (Quasistatic Forward)",
+    // drive.sysIdQuasistChooser.addOption("Drive SysId (Quasistatic Reverse)",
+    // drive.sysIdQuasistChooser.addOption( "Drive SysId (DynaChooser.addOption(
 
-    // Configure the button bindings
+    // Configure the button bi
+
     configureButtonBindings();
   }
 
@@ -170,10 +168,9 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -controller.getLeftY(),
-            () -> -controller.getLeftX(),
-            () -> -controller.getRightX()));
-    controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+            () -> MathUtil.applyDeadband(-controller.getLeftY(), .3),
+            () -> MathUtil.applyDeadband(-controller.getLeftX(), .3),
+            () -> MathUtil.applyDeadband(-controller.getRightX(), .3)));
     controller
         .b()
         .onTrue(
@@ -183,7 +180,9 @@ public class RobotContainer {
                             new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                     drive)
                 .ignoringDisable(true));
-    controller.a().whileTrue(new Testall(beltwrap, uptake, cartridge, shooter, arm));
+    controller.a().whileTrue(new Intake(uptake, beltwrap, cartridge, arm, 35.));
+    controller.y().onTrue(new shoot(shooter, cartridge, 5000, 5500, arm));
+    controller.x().whileTrue(new moveArm(arm));
   }
 
   /**

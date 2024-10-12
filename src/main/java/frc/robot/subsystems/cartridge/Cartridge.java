@@ -23,6 +23,8 @@ public class Cartridge extends SubsystemBase {
       if (Constants.currentMode.equals(Constants.Mode.REAL)) {
         return instance = new Cartridge(new CartridgeIOSparkMax());
       } else if (Constants.currentMode.equals(Constants.Mode.SIM)) {
+        System.out.println("Cartridge works");
+
         return instance = new Cartridge(new CartridgeIOSim());
       }
       return instance;

@@ -9,10 +9,11 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
+import org.littletonrobotics.junction.Logger;
 
 public class ArmIOTalonFX implements ArmIO {
-  private static final double GEAR_RATIO = 1 / 9;
-  private final TalonFX arm = new TalonFX(0, "CANivore");
+  private static final double GEAR_RATIO = 47.6;
+  private final TalonFX arm = new TalonFX(28, "CANIVORE 3");
   private final MotionMagicVoltage mRequest = new MotionMagicVoltage(0);
 
   public ArmIOTalonFX() {
@@ -20,18 +21,37 @@ public class ArmIOTalonFX implements ArmIO {
     config.CurrentLimits.SupplyCurrentLimit = 40.0;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    config.Slot0.kS = .75;
+    config.Slot0.kV = .12;
+    config.Slot0.kP = 7.0;
+    config.MotionMagic.MotionMagicAcceleration = 60.0;
+    config.MotionMagic.MotionMagicCruiseVelocity = 60.0;
 
     arm.getConfigurator().apply(config);
     arm.setPosition(0.0);
+    arm.setInverted(false);
+  }
+
+  public double degreesToRotations(double degrees) {
+    return Units.degreesToRotations(degrees * GEAR_RATIO);
+  }
+
+  public double rotationsToDegrees(double rotations) {
+    return Units.rotationsToDegrees(rotations / GEAR_RATIO);
   }
 
   @Override
   public void updateInputs(ArmIOInputs inputs) {
     inputs.currentAmps = arm.getStatorCurrent().getValueAsDouble();
-    inputs.postionDeg = Units.rotationsToDegrees(arm.getPosition().getValueAsDouble() * GEAR_RATIO);
+    inputs.postionDeg = rotationsToDegrees(arm.getPosition().getValueAsDouble());
     inputs.temperature = arm.getDeviceTemp().getValueAsDouble();
     inputs.voltageOut = arm.getMotorVoltage().getValueAsDouble();
     inputs.velocityDegPerSec = arm.getVelocity().getValueAsDouble() * GEAR_RATIO;
+    inputs.atPosition = atPosition();
+    inputs.setpoint = arm.getClosedLoopReference().getValueAsDouble();
+    Logger.recordOutput(
+        "Arm Rotations To Degrees", Units.rotationsToDegrees(arm.getPosition().getValueAsDouble()));
+    Logger.recordOutput("Motor Rotations", arm.getPosition().getValueAsDouble());
   }
 
   @Override
@@ -41,8 +61,12 @@ public class ArmIOTalonFX implements ArmIO {
 
   @Override
   public void setPosition(double position) {
-
-    arm.setControl(mRequest.withPosition(MathUtil.clamp(position, 0, 10000)));
+    // Position here is in degrees
+    Logger.recordOutput("Other Arm Setpoint", position);
+    Logger.recordOutput(
+        "Arm setpoint clamped and converted",
+        MathUtil.clamp(degreesToRotations(position), 0.0, 80.));
+    arm.setControl(mRequest.withPosition(MathUtil.clamp(degreesToRotations(position), 0.0, 80.)));
   }
 
   @Override
@@ -50,10 +74,7 @@ public class ArmIOTalonFX implements ArmIO {
     var slot0Configs = new Slot0Configs();
     slot0Configs.kS = kS;
     slot0Configs.kV = kV;
-    slot0Configs.kA = kA;
     slot0Configs.kP = kP;
-    slot0Configs.kI = kI;
-    slot0Configs.kD = kD;
     arm.getConfigurator().apply(slot0Configs);
   }
 
@@ -68,5 +89,18 @@ public class ArmIOTalonFX implements ArmIO {
   @Override
   public void configureNeutralMode(NeutralModeValue value) {
     arm.setNeutralMode(value);
+  }
+
+  @Override
+  public void zeroArm() {
+    arm.setPosition(0.0);
+  }
+
+  public boolean atPosition() {
+    if (MathUtil.isNear(0., rotationsToDegrees(arm.getClosedLoopError().getValueAsDouble()), 2.)) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

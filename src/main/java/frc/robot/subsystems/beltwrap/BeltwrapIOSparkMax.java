@@ -4,7 +4,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 
 public class BeltwrapIOSparkMax implements BeltwrapIO {
-  private final CANSparkMax beltwrap = new CANSparkMax(0, MotorType.kBrushless);
+  private final CANSparkMax beltwrap = new CANSparkMax(26, MotorType.kBrushless);
 
   public BeltwrapIOSparkMax() {
     beltwrap.restoreFactoryDefaults();

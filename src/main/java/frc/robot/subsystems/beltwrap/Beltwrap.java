@@ -27,6 +27,8 @@ public class Beltwrap extends SubsystemBase {
       if (Constants.currentMode.equals(Constants.Mode.REAL)) {
         return instance = new Beltwrap(new BeltwrapIOSparkMax());
       } else if (Constants.currentMode.equals(Constants.Mode.SIM)) {
+        System.out.println("Beltwrap works");
+
         return instance = new Beltwrap(new BeltwrapIOSim());
       } else {
         return instance;

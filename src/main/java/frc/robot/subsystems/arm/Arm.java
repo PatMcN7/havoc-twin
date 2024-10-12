@@ -6,6 +6,7 @@ package frc.robot.subsystems.arm;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -16,8 +17,10 @@ import org.littletonrobotics.junction.Logger;
 public class Arm extends SubsystemBase {
   private final ArmIO io;
   private final ArmIOInputsAutoLogged inputs = new ArmIOInputsAutoLogged();
+  private final DigitalInput zeroLimitSwitch = new DigitalInput(9);
   private final MechanismLigament2d armLigament;
   private static Arm instance;
+  private boolean zeroedFlag = false;
 
   /** Creates a new Arm. */
   public Arm(ArmIO io) {
@@ -29,8 +32,8 @@ public class Arm extends SubsystemBase {
     this.io = io;
     switch (Constants.currentMode) {
       case REAL:
-        io.configurePID(0, 0, 0, 0, 0, 0);
-        io.configureMotionMagic(0, 0, 0);
+        // io.configurePID(.75, .12, 0, 7., 0, 0);
+        // io.configureMotionMagic(60.0, 60.0, 60.0);
     }
   }
 
@@ -39,7 +42,9 @@ public class Arm extends SubsystemBase {
       if (Constants.currentMode.equals(Constants.Mode.REAL)) {
         return instance = new Arm(new ArmIOTalonFX());
       } else if (Constants.currentMode.equals(Constants.Mode.SIM)) {
+        System.out.println("Arm works");
         return instance = new Arm(new ArmIOSim());
+
       } else {
         return instance;
       }
@@ -55,6 +60,12 @@ public class Arm extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Arm", inputs);
 
+    if (!zeroLimitSwitch.get()) {
+      zeroedFlag = true;
+      zeroArm();
+    }
+
+    Logger.recordOutput("Arm/LimitSwitchtrue", zeroLimitSwitch.get());
     armLigament.setAngle(new Rotation2d(inputs.postionDeg));
   }
 
@@ -69,5 +80,13 @@ public class Arm extends SubsystemBase {
 
   public void setNeutralMode(NeutralModeValue value) {
     io.configureNeutralMode(value);
+  }
+
+  public void zeroArm() {
+    io.zeroArm();
+  }
+
+  public boolean atPosition() {
+    return inputs.atPosition;
   }
 }

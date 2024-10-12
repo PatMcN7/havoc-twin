@@ -23,6 +23,8 @@ public class Uptake extends SubsystemBase {
       if (Constants.currentMode.equals(Constants.Mode.REAL)) {
         return instance = new Uptake(new UptakeIOTalonFX());
       } else if (Constants.currentMode.equals(Constants.Mode.SIM)) {
+        System.out.println("Uptake works");
+
         return instance = new Uptake(new UptakeIOSim());
       }
 
