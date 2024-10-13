@@ -144,6 +144,7 @@ public class RobotContainer {
         // uptake = new Uptake(new UptakeIOTalonFX());
         // beltwrap = new Beltwrap(new BeltwrapIOSparkMax());
         // arm = new Arm(new ArmIOTalonFX());
+        break;
     }
 
     // Set up at routines
