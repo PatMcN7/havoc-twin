@@ -22,10 +22,9 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.DriveCommands;
-import frc.robot.commands.Intake;
-import frc.robot.commands.moveArm;
-import frc.robot.commands.shoot;
+import frc.robot.commands.drive.DriveCommands;
+import frc.robot.commands.intake.Intake;
+import frc.robot.commands.shooter.shoot;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.beltwrap.Beltwrap;
 import frc.robot.subsystems.cartridge.Cartridge;
@@ -155,7 +154,7 @@ public class RobotContainer {
     // drive.sysIdQuasistChooser.addOption( "Drive SysId (DynaChooser.addOption(
 
     // Configure the button bi
-
+    autoChooser.addDefaultOption("Test", drive.followPath("Test Path"));
     configureButtonBindings();
   }
 
@@ -183,7 +182,7 @@ public class RobotContainer {
                 .ignoringDisable(true));
     controller.a().whileTrue(new Intake(uptake, beltwrap, cartridge, arm, 35.));
     controller.y().onTrue(new shoot(shooter, cartridge, 5000, 5500, arm));
-    controller.x().whileTrue(new moveArm(arm));
+    controller.x().whileTrue(drive.pathfind(new Pose2d(5.0, 5.00, new Rotation2d(0.0))));
   }
 
   /**

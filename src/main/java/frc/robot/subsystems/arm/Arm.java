@@ -5,9 +5,11 @@
 package frc.robot.subsystems.arm;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.LimelightHelpers;
 import org.littletonrobotics.junction.Logger;
 
 public class Arm extends SubsystemBase {
@@ -16,15 +18,20 @@ public class Arm extends SubsystemBase {
   private static Arm instance;
   private final ArmVisualizer measuredVisualizer;
   private final ArmVisualizer setpointVisualizer;
+  private final InterpolatingDoubleTreeMap distanceToShot;
+  private final InterpolatingDoubleTreeMap tyToDistance;
 
   /** Creates a new Arm. */
   public Arm(ArmIO io) {
+    distanceToShot = new InterpolatingDoubleTreeMap();
+    tyToDistance = new InterpolatingDoubleTreeMap();
     this.io = io;
     switch (Constants.currentMode) {
       case REAL:
         // io.configurePID(.75, .12, 0, 7., 0, 0);
         // io.configureMotionMagic(60.0, 60.0, 60.0);
     }
+
     measuredVisualizer = new ArmVisualizer("Measured", Color.kBlack);
     setpointVisualizer = new ArmVisualizer("Setpoint", Color.kGreen);
   }
@@ -79,5 +86,13 @@ public class Arm extends SubsystemBase {
 
   public boolean atPosition() {
     return inputs.atPosition;
+  }
+
+  public boolean isArmZeroed() {
+    return inputs.atZero;
+  }
+
+  public double getShotAngle() {
+    return distanceToShot.get(tyToDistance.get(LimelightHelpers.getTY("")));
   }
 }

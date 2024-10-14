@@ -8,6 +8,7 @@ public class Cartridge extends SubsystemBase {
   private final CartridgeIO io;
   private final CartridgeIOInputsAutoLogged inputs = new CartridgeIOInputsAutoLogged();
   private static Cartridge instance;
+  private static boolean hasPiece;
 
   public Cartridge(CartridgeIO io) {
     this.io = io;
@@ -37,6 +38,12 @@ public class Cartridge extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Cartridge", inputs);
+
+    if (inputs.beamOne && inputs.beamTwo) {
+      hasPiece = true;
+    } else {
+      hasPiece = false;
+    }
   }
 
   public void runVolts(double volts) {
@@ -49,5 +56,9 @@ public class Cartridge extends SubsystemBase {
 
   public boolean getSecondBeam() {
     return inputs.beamTwo;
+  }
+
+  public static boolean hasPiece() {
+    return hasPiece;
   }
 }

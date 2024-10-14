@@ -95,10 +95,7 @@ public class ArmIOTalonFX implements ArmIO {
   }
 
   public boolean atPosition() {
-    if (MathUtil.isNear(0., rotationsToDegrees(arm.getClosedLoopError().getValueAsDouble()), 2.)) {
-      return true;
-    } else {
-      return false;
-    }
+    return (MathUtil.isNear(
+        0., rotationsToDegrees(arm.getClosedLoopError().getValueAsDouble()), 1.));
   }
 }

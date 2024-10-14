@@ -17,6 +17,7 @@ import static edu.wpi.first.units.Units.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PathPlannerLogging;
@@ -227,6 +228,11 @@ public class Drive extends SubsystemBase {
     PathConstraints constraints =
         new PathConstraints(3.0, 4.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
     return AutoBuilder.pathfindToPose(targetPose, constraints);
+  }
+
+  public Command followPath(String name) {
+    PathPlannerPath path = PathPlannerPath.fromPathFile(name);
+    return AutoBuilder.followPath(path);
   }
   /** Returns a command to run a quasistatic test in the specified direction. */
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
