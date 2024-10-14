@@ -9,12 +9,14 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
-import org.littletonrobotics.junction.Logger;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 public class ArmIOTalonFX implements ArmIO {
   private static final double GEAR_RATIO = 47.6;
   private final TalonFX arm = new TalonFX(28, "CANIVORE 3");
   private final MotionMagicVoltage mRequest = new MotionMagicVoltage(0);
+  private final DigitalInput limitSwitch = new DigitalInput(9);
+  private double setpointDeg;
 
   public ArmIOTalonFX() {
     var config = new TalonFXConfiguration();
@@ -49,9 +51,8 @@ public class ArmIOTalonFX implements ArmIO {
     inputs.velocityDegPerSec = arm.getVelocity().getValueAsDouble() * GEAR_RATIO;
     inputs.atPosition = atPosition();
     inputs.setpoint = arm.getClosedLoopReference().getValueAsDouble();
-    Logger.recordOutput(
-        "Arm Rotations To Degrees", Units.rotationsToDegrees(arm.getPosition().getValueAsDouble()));
-    Logger.recordOutput("Motor Rotations", arm.getPosition().getValueAsDouble());
+    inputs.setpointDeg = setpointDeg;
+    inputs.atZero = !limitSwitch.get();
   }
 
   @Override
@@ -62,10 +63,7 @@ public class ArmIOTalonFX implements ArmIO {
   @Override
   public void setPosition(double position) {
     // Position here is in degrees
-    Logger.recordOutput("Other Arm Setpoint", position);
-    Logger.recordOutput(
-        "Arm setpoint clamped and converted",
-        MathUtil.clamp(degreesToRotations(position), 0.0, 80.));
+    setpointDeg = position;
     arm.setControl(mRequest.withPosition(MathUtil.clamp(degreesToRotations(position), 0.0, 80.)));
   }
 

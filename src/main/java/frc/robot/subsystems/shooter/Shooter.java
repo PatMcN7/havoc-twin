@@ -16,6 +16,8 @@ public class Shooter extends SubsystemBase {
     switch (Constants.currentMode) {
       case REAL:
         io.configureGains(.28, 0.12, 0.12, 0., 0.);
+      case SIM:
+        io.configureGains(.28, 0.12, 0.12, 0., 0.);
     }
 
     this.io = io;

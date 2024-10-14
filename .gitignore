@@ -41,6 +41,8 @@
 
 # Log file
 *.log
+*.dat
+*.wpilog
 
 # BlueJ files
 *.ctxt
@@ -173,3 +175,6 @@ simgui*.json
 
 # Version file
 src/main/java/frc/robot/BuildConstants.java
+/ctre_sim
+ctre_sim/Talon FX vers. C - 018 - 0 - ext.dat
+ctre_sim/Talon FX vers. C - 019 - 0 - ext.dat

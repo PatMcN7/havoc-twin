@@ -11,9 +11,10 @@ public interface ArmIO {
     public double voltageOut = 0.0;
     public double currentAmps = 0.0;
     public double temperature = 0.0;
-    public boolean atPosition;
-    public boolean zeroed = false;
-    public double setpoint = 0.0;
+    public boolean atPosition = false;
+    public boolean atZero = false;
+    public double setpoint = 0.0; // motor rotations
+    public double setpointDeg = 0.0;
   }
 
   public default void updateInputs(ArmIOInputs inputs) {}
