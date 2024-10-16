@@ -2,29 +2,33 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.arm;
+package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.shooter.Shooter;
 
-public class moveArm extends Command {
-  Arm arm;
-  /** Creates a new moveArm. */
-  public moveArm(Arm arm) {
+public class rev extends Command {
+  /** Creates a new rev. */
+  private final Shooter shooter;
+  private double leftRPM;
+  private double rightRPM;
+  public rev(Shooter shooter, double leftRPM, double rightRPM) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.arm = arm;
+    this.leftRPM = leftRPM;
+    this.rightRPM = rightRPM;
+    this.shooter = shooter;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    arm.runVolts(-.5);
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    arm.runVolts(-0.5);
+    shooter.setRPM(leftRPM, rightRPM);
   }
 
   // Called once the command ends or is interrupted.
@@ -34,10 +38,6 @@ public class moveArm extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (arm.isArmZeroed()) {
-      return true;
-    } else {
-      return false;
-    }
+    return false;
   }
 }

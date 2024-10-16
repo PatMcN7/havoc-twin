@@ -32,6 +32,7 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 public class Robot extends LoggedRobot {
   private Command autonomousCommand;
   private RobotContainer robotContainer;
+  private Command moveArm;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -133,7 +134,7 @@ public class Robot extends LoggedRobot {
   public void teleopInit() {
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
-    // continue until interrupted by another command, remove
+    // continu  e until interrupted by another command, remove
     // this line or comment it out.
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
@@ -142,7 +143,11 @@ public class Robot extends LoggedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    if (!Arm.getInstance().zeroedFlag) {
+      CommandScheduler.getInstance().schedule(Arm.getInstance().zeroCommand());
+    }
+  }
 
   /** This function is called once when test mode is enabled. */
   @Override

@@ -7,6 +7,7 @@ package frc.robot.subsystems.arm;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
@@ -20,6 +21,7 @@ public class Arm extends SubsystemBase {
   private final ArmVisualizer setpointVisualizer;
   private final InterpolatingDoubleTreeMap distanceToShot;
   private final InterpolatingDoubleTreeMap tyToDistance;
+  public boolean zeroedFlag = false;
 
   /** Creates a new Arm. */
   public Arm(ArmIO io) {
@@ -60,6 +62,7 @@ public class Arm extends SubsystemBase {
     Logger.processInputs("Arm", inputs);
 
     if (inputs.atZero) {
+      zeroedFlag = true;
       zeroArm();
     }
 
@@ -90,6 +93,10 @@ public class Arm extends SubsystemBase {
 
   public boolean isArmZeroed() {
     return inputs.atZero;
+  }
+
+  public InstantCommand zeroCommand() {
+    return new InstantCommand(() -> io.setVoltage(-0.4), Arm.getInstance());
   }
 
   public double getShotAngle() {

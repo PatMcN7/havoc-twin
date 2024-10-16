@@ -155,7 +155,7 @@ public class RobotContainer {
     // drive.sysIdQuasistChooser.addOption( "Drive SysId (DynaChooser.addOption(
 
     // Configure the button bi
-    autoChooser.addDefaultOption("Test", drive.followPath("Test Path"));
+    autoChooser.addDefaultOption("Test", drive.followPath("Test Path", true));
     configureButtonBindings();
   }
 

@@ -19,7 +19,7 @@ public class FollowPathIntake extends ParallelDeadlineGroup {
   /** Creates a new FollowPathIntake. */
   private Drive drive;
 
-  public FollowPathIntake(Drive drive, String path) {
+  public FollowPathIntake(Drive drive, String path, boolean reset) {
     // Add the deadline command in the super() call. Add other commands using
     // addCommands().
     super(
@@ -29,7 +29,7 @@ public class FollowPathIntake extends ParallelDeadlineGroup {
             Cartridge.getInstance(),
             Arm.getInstance(),
             35.0),
-        drive.followPath(path));
+        drive.followPath(path, reset));
     // addCommands(new FooCommand(), new BarCommand());
   }
 }

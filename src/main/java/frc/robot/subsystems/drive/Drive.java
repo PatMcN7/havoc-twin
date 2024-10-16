@@ -22,6 +22,8 @@ import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
+
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -37,6 +39,8 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.LimelightHelpers;
+import frc.robot.subsystems.cartridge.Cartridge;
 import frc.robot.util.LocalADStarAK;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -56,6 +60,8 @@ public class Drive extends SubsystemBase {
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
   private final SysIdRoutine sysId;
+
+  private final PIDController aiPID = new PIDController(0.25, 0.0, 0.0);
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
   private Rotation2d rawGyroRotation = new Rotation2d();
@@ -190,7 +196,15 @@ public class Drive extends SubsystemBase {
    */
   public void runVelocity(ChassisSpeeds speeds) {
     // Calculate module setpoints
-    ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, 0.02);
+    ChassisSpeeds newSpeeds;
+    if ((LimelightHelpers.getTargetCount("LL") > 0) && !Cartridge.hasPiece()) {
+      aiPID.setSetpoint(0.0);
+      newSpeeds = new ChassisSpeeds(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, aiPID.calculate(LimelightHelpers.getTX("LL")));
+    }
+    else {
+      newSpeeds = speeds; 
+    }
+    ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(newSpeeds, 0.02);
     SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(discreteSpeeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, MAX_LINEAR_SPEED);
 
@@ -230,8 +244,11 @@ public class Drive extends SubsystemBase {
     return AutoBuilder.pathfindToPose(targetPose, constraints);
   }
 
-  public Command followPath(String name) {
+  public Command followPath(String name, boolean reset) {
     PathPlannerPath path = PathPlannerPath.fromPathFile(name);
+    if (reset) {
+      setPose(path.getPreviewStartingHolonomicPose());
+    }
     return AutoBuilder.followPath(path);
   }
   /** Returns a command to run a quasistatic test in the specified direction. */
@@ -286,6 +303,7 @@ public class Drive extends SubsystemBase {
    * @param timestamp The timestamp of the vision measurement in seconds.
    */
   public void addVisionMeasurement(Pose2d visionPose, double timestamp) {
+    // poseEstimator.setVisionMeasurementStdDevs();
     poseEstimator.addVisionMeasurement(visionPose, timestamp);
   }
 
