@@ -42,7 +42,7 @@ public class shoot extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    arm.setPosition(arm.getShotAngle());
+    arm.setPosition(35.0);
     shooter.setRPM(leftVelocityRPM, rightVelocityRPM);
 
     if (shooter.getLeftAtSetpoint() && shooter.getRightAtSetpoint() && arm.atPosition()) {

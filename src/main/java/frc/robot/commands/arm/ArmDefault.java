@@ -16,6 +16,7 @@ public class ArmDefault extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     this.arm = arm;
     pieceIn = Cartridge.hasPiece();
+    addRequirements(arm);
   }
 
   // Called when the command is initially scheduled.
