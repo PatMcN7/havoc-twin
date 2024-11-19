@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
+import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
 public class Arm extends SubsystemBase {
@@ -22,7 +23,9 @@ public class Arm extends SubsystemBase {
   private final InterpolatingDoubleTreeMap distanceToShot;
   private final InterpolatingDoubleTreeMap tyToDistance;
   public boolean zeroedFlag = false;
-
+  public static final LoggedTunableNumber tunedAngle =
+      new LoggedTunableNumber("Arm/Tuned Setpoint", 0);
+  private double tunedReuslt = 0.0;
   /** Creates a new Arm. */
   public Arm(ArmIO io) {
     distanceToShot = new InterpolatingDoubleTreeMap();
@@ -68,6 +71,12 @@ public class Arm extends SubsystemBase {
 
     measuredVisualizer.update(inputs.postionDeg);
     setpointVisualizer.update(inputs.setpointDeg);
+
+    Logger.recordOutput("Tuned Number Output", tunedAngle.get());
+  }
+
+  public void setTunedPos() {
+    LoggedTunableNumber.ifChanged(hashCode(), () -> setPosition(tunedAngle.get()), tunedAngle);
   }
 
   public void runVolts(double volts) {

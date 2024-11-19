@@ -8,6 +8,7 @@ public class Uptake extends SubsystemBase {
   private final UptakeIO io;
   private final UptakeIOInputsAutoLogged inputs = new UptakeIOInputsAutoLogged();
   private static Uptake instance;
+  public static boolean isIntaking;
 
   public Uptake(UptakeIO io) {
     this.io = io;
@@ -38,6 +39,12 @@ public class Uptake extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Uptake", inputs);
+    Logger.recordOutput("Is Intaking", isIntaking);
+    if (inputs.appliedVolts == 0.0) {
+      isIntaking = false;
+    } else {
+      isIntaking = true;
+    }
   }
 
   public void runVolts(double volts) {

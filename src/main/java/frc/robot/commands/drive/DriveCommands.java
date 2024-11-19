@@ -24,10 +24,10 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.LimelightHelpers;
-import frc.robot.subsystems.cartridge.Cartridge;
 import frc.robot.subsystems.drive.Drive;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import org.littletonrobotics.junction.Logger;
 
 public class DriveCommands {
   private static final double DEADBAND = 0.1;
@@ -42,7 +42,8 @@ public class DriveCommands {
       Drive drive,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
-      DoubleSupplier omegaSupplier) {
+      DoubleSupplier omegaSupplier,
+      BooleanSupplier alignSupplier) {
     return Commands.run(
         () -> {
           // Apply deadband
@@ -67,16 +68,28 @@ public class DriveCommands {
           boolean isFlipped =
               DriverStation.getAlliance().isPresent()
                   && DriverStation.getAlliance().get() == Alliance.Red;
-          if ((LimelightHelpers.getTargetCount("LL") > 0) && !Cartridge.hasPiece()) {
-            omegaPID.setSetpoint(0.0);
+          //   if ((LimelightHelpers.getTargetCount("LL") > 0) && !Cartridge.hasPiece()) {
+          //     omegaPID.setSetpoint(0.0);
+          //     drive.runVelocity(
+          //         ChassisSpeeds.fromFieldRelativeSpeeds(
+          //             linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
+          //             linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
+          //             omegaPID.calculate(LimelightHelpers.getTX("LL")),
+          //             isFlipped
+          //                 ? drive.getRotation().plus(new Rotation2d(Math.PI))
+          //                 : drive.getRotation()));
+          if (alignSupplier.getAsBoolean()) {
             drive.runVelocity(
                 ChassisSpeeds.fromFieldRelativeSpeeds(
                     linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
                     linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
-                    omegaPID.calculate(LimelightHelpers.getTX("LL")),
+                    omegaPID.calculate(
+                        drive.getPose().getRotation().getDegrees(),
+                        drive.getAngleToPose(new Translation2d(3., 3.))),
                     isFlipped
                         ? drive.getRotation().plus(new Rotation2d(Math.PI))
                         : drive.getRotation()));
+            Logger.recordOutput("Omega Out", omegaPID.getPositionError());
           } else {
             drive.runVelocity(
                 ChassisSpeeds.fromFieldRelativeSpeeds(

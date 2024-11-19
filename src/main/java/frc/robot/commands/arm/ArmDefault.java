@@ -5,6 +5,7 @@
 package frc.robot.commands.arm;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.cartridge.Cartridge;
 
@@ -27,8 +28,10 @@ public class ArmDefault extends Command {
   @Override
   public void execute() {
     pieceIn = Cartridge.hasPiece();
-    if (pieceIn) {
-      arm.setPosition(0);
+    if (pieceIn && Constants.tuningMode) {
+      arm.setTunedPos();
+    } else if (Cartridge.hasPiece()) {
+      arm.setTunedPos();
     } else {
       arm.setPosition(35.0);
     }

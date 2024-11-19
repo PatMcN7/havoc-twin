@@ -60,6 +60,7 @@ public class RobotContainer {
   private Beltwrap beltwrap = Beltwrap.getInstance();
   private Arm arm = Arm.getInstance();
   private final CommandXboxController controller = new CommandXboxController(0);
+  private double angleToGoal;
   // private final XboxControllerSim simController = new XboxControllerSim(0);
 
   // Controller
@@ -155,7 +156,7 @@ public class RobotContainer {
     // drive.sysIdQuasistChooser.addOption( "Drive SysId (DynaChooser.addOption(
 
     // Configure the button bi
-    autoChooser.addDefaultOption("Test", drive.followPath("Test Path", true));
+    // autoChooser.addDefaultOption("Test", drive.followPath("Test Path", true));
     configureButtonBindings();
   }
 
@@ -171,7 +172,8 @@ public class RobotContainer {
             drive,
             () -> MathUtil.applyDeadband(-controller.getLeftY(), .3),
             () -> MathUtil.applyDeadband(-controller.getLeftX(), .3),
-            () -> MathUtil.applyDeadband(-controller.getRightX(), .3)));
+            () -> MathUtil.applyDeadband(-controller.getRightX(), .3),
+            () -> controller.x().getAsBoolean()));
     controller
         .b()
         .onTrue(
@@ -181,9 +183,10 @@ public class RobotContainer {
                             new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                     drive)
                 .ignoringDisable(true));
-    controller.a().whileTrue(new Intake(uptake, beltwrap, cartridge, arm, 35.));
-    controller.y().onTrue(new shoot(shooter, cartridge, 5000, 5500, arm));
-    // controller.x().whileTrue(drive.pathfind(new Pose2d(5.0, 5.00, new Rotation2d(0.0))));
+    controller.a().whileTrue(new Intake(uptake, beltwrap, cartridge, arm, 10.));
+    controller.y().onTrue(new shoot(shooter, cartridge, 3000, 5000, arm));
+    // controller.x().onTrue(new AlignToGoal(drive, drive.angleToGoal));
+    controller.x().whileTrue(new Intake(uptake, beltwrap, cartridge, arm, 25.));
     arm.setDefaultCommand(new ArmDefault(arm));
   }
 

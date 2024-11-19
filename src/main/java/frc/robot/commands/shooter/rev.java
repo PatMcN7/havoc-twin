@@ -10,8 +10,10 @@ import frc.robot.subsystems.shooter.Shooter;
 public class rev extends Command {
   /** Creates a new rev. */
   private final Shooter shooter;
+
   private double leftRPM;
   private double rightRPM;
+
   public rev(Shooter shooter, double leftRPM, double rightRPM) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.leftRPM = leftRPM;
@@ -21,9 +23,7 @@ public class rev extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override

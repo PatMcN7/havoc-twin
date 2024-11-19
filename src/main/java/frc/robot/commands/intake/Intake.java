@@ -46,7 +46,7 @@ public class Intake extends Command {
     }
     if (cartridge.getFirstBeam()) {
       uptake.runVolts(4.);
-      cartridge.runVolts(3.0);
+      cartridge.runVolts(2.0);
     }
   }
 

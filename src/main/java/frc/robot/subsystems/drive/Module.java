@@ -48,7 +48,7 @@ public class Module {
       case REAL:
         driveFeedforward = new SimpleMotorFeedforward(0.2, 0.12);
         driveFeedback = new PIDController(.06, .0, 0.);
-        turnFeedback = new PIDController(1.75, 0.3, .0);
+        turnFeedback = new PIDController(10.0, 0.3, .0);
         break;
       case REPLAY:
         driveFeedforward = new SimpleMotorFeedforward(0., 0.);

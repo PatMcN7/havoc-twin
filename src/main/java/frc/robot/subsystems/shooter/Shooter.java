@@ -1,5 +1,6 @@
 package frc.robot.subsystems.shooter;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTunableNumber;
@@ -19,7 +20,7 @@ public class Shooter extends SubsystemBase {
       case SIM:
         io.configureGains(.28, 0.12, 0.12, 0., 0.);
     }
-
+    Pose2d pose = new Pose2d();
     this.io = io;
     // sysId =
     //     new SysIdRoutine(
