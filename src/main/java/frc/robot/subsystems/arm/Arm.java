@@ -63,6 +63,7 @@ public class Arm extends SubsystemBase {
 
     io.updateInputs(inputs);
     Logger.processInputs("Arm", inputs);
+    Logger.processInputs("Arrrm", inputs);
 
     if (inputs.atZero) {
       zeroedFlag = true;
