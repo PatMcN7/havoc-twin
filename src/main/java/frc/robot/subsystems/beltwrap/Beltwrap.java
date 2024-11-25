@@ -30,6 +30,8 @@ public class Beltwrap extends SubsystemBase {
         System.out.println("Beltwrap works");
 
         return instance = new Beltwrap(new BeltwrapIOSim());
+      } else if (Constants.currentMode.equals(Constants.Mode.REPLAY)) {
+        return instance = new Beltwrap(new BeltwrapIO() {});
       } else {
         return instance;
       }

@@ -21,7 +21,7 @@ public class FlywheelIOSim implements FlywheelIO {
     this.name = name;
   }
 
-  public void setSimConstants(DCMotor motor, double gearing, double MOI, String name){
+  public void setSimConstants(DCMotor motor, double gearing, double MOI, String name) {
     sim = new FlywheelSim(motor, gearing, MOI);
   }
 

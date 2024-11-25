@@ -27,9 +27,8 @@ public interface FlywheelIO {
 
     /** Current drawn by the flywheel system in Amps. */
     double currentAmps;
-    
-    String name;
 
+    String name;
   }
 
   /**

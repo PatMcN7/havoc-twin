@@ -27,6 +27,8 @@ public class Uptake extends SubsystemBase {
         System.out.println("Uptake works");
 
         return instance = new Uptake(new UptakeIOSim());
+      } else if (Constants.currentMode.equals(Constants.Mode.REPLAY)) {
+        return instance = new Uptake(new UptakeIO() {});
       }
 
       return instance;

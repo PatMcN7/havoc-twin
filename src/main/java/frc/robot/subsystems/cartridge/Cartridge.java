@@ -27,6 +27,8 @@ public class Cartridge extends SubsystemBase {
         System.out.println("Cartridge works");
 
         return instance = new Cartridge(new CartridgeIOSim());
+      } else if (Constants.currentMode.equals(Constants.Mode.REPLAY)) {
+        return instance = new Cartridge(new CartridgeIO() {});
       }
       return instance;
     } else {

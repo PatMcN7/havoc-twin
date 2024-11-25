@@ -28,12 +28,11 @@ public class Flywheel extends SubsystemBase {
     io.setVoltage(volts);
   }
 
-  public void runVelocity(double RPM){
+  public void runVelocity(double RPM) {
     io.setVelocity(RPM);
   }
 
-  public void setPID(double kP, double kI, double kD){
+  public void setPID(double kP, double kI, double kD) {
     // inputs.set
   }
-  
 }

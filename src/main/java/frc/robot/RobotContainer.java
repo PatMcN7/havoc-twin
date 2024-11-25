@@ -27,7 +27,6 @@ import frc.lib.flywheel.Flywheel;
 import frc.lib.flywheel.FlywheelFactory;
 import frc.robot.commands.arm.ArmDefault;
 import frc.robot.commands.drive.DriveCommands;
-import frc.robot.commands.intake.Intake;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.beltwrap.Beltwrap;
 import frc.robot.subsystems.cartridge.Cartridge;
@@ -41,12 +40,9 @@ import frc.robot.subsystems.uptake.Uptake;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
- * This class is where the bulk of the robot should be declared. Since
- * Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in
- * the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of
- * the robot (including
+ * This class is where the bulk of the robot should be declared. Since Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
@@ -70,7 +66,8 @@ public class RobotContainer {
   private double angleToGoal;
   // private final XboxControllerSim simController = new XboxControllerSim(0);
   private Flywheel left = FlywheelFactory.getFlywheel("left", DCMotor.getKrakenX60(1), 1.0, 0.004);
-  private Flywheel right = FlywheelFactory.getFlywheel("right", DCMotor.getKrakenX60(1), 1.0, 0.004);
+  private Flywheel right =
+      FlywheelFactory.getFlywheel("right", DCMotor.getKrakenX60(1), 1.0, 0.004);
 
   // Controller
 
@@ -79,21 +76,20 @@ public class RobotContainer {
   // private final LoggedDashboardNumber flywheelSpeedInput =
   // new LoggedDashboardNumber("Flywheel Speed", 1500.0);
 
-  /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
-   */
+  /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
 
-        drive = new Drive(
-            new GyroIOPigeon2(true),
-            new ModuleIOTalonFX(0),
-            new ModuleIOTalonFX(1),
-            new ModuleIOTalonFX(2),
-            new ModuleIOTalonFX(3));
+        drive =
+            new Drive(
+                new GyroIOPigeon2(true),
+                new ModuleIOTalonFX(0),
+                new ModuleIOTalonFX(1),
+                new ModuleIOTalonFX(2),
+                new ModuleIOTalonFX(3));
         // shooter = new Shooter(new ShooterIOTalonFX());
         // cartridge = new Cartridge(new CartridgeIOSparkMax());
         // uptake = new Uptake(new UptakeIOTalonFX());
@@ -111,13 +107,13 @@ public class RobotContainer {
 
       case SIM:
         // // Sim robot, instantiate physics sim IO implementations
-        drive = new Drive(
-            new GyroIO() {
-            },
-            new ModuleIOSim(),
-            new ModuleIOSim(),
-            new ModuleIOSim(),
-            new ModuleIOSim());
+        drive =
+            new Drive(
+                new GyroIO() {},
+                new ModuleIOSim(),
+                new ModuleIOSim(),
+                new ModuleIOSim(),
+                new ModuleIOSim());
         // // flywheel = new Flywheel(new FlywheelIOSim());
         // drive =
         // new Drive(
@@ -143,12 +139,13 @@ public class RobotContainer {
         // new ModuleIO() {},
         // new ModuleIO() {});
         // // flywheel = new Flywheel(new FlywheelIO() {});
-        drive = new Drive(
-            new GyroIOPigeon2(true),
-            new ModuleIOTalonFX(0),
-            new ModuleIOTalonFX(1),
-            new ModuleIOTalonFX(2),
-            new ModuleIOTalonFX(3));
+        drive =
+            new Drive(
+                new GyroIOPigeon2(true),
+                new ModuleIOTalonFX(0),
+                new ModuleIOTalonFX(1),
+                new ModuleIOTalonFX(2),
+                new ModuleIOTalonFX(3));
         // shooter = new Shooter(new ShooterIOTalonFX());
         // cartridge = new Cartridge(new CartridgeIOSparkMax());
         // uptake = new Uptake(new UptakeIOTalonFX());
@@ -170,11 +167,9 @@ public class RobotContainer {
   }
 
   /**
-   * Use this method to define your button->command mappings. Buttons can be
-   * created by
+   * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
-   * it to a {@link
+   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
@@ -189,18 +184,17 @@ public class RobotContainer {
         .b()
         .onTrue(
             Commands.runOnce(
-                () -> drive.setPose(
-                    new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
-                drive)
+                    () ->
+                        drive.setPose(
+                            new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
+                    drive)
                 .ignoringDisable(true));
     // controller.a().whileTrue(new Intake(uptake, beltwrap, cartridge, arm, 10.));
     // controller.y().onTrue(new shoot(shooter, cartridge, 3000, 5000, arm));
     // controller.x().onTrue(new AlignToGoal(drive, drive.angleToGoal));
     // controller.x().whileTrue(new Intake(uptake, beltwrap, cartridge, arm, 25.));
     // controller.x().onTrue(Commands.run(() -> flywheel.setVoltage(5.0)));
-    controller
-        .x()
-        .whileTrue(Commands.startEnd(() -> left.runVolts(10), () -> left.runVolts(0.0)));
+    controller.x().whileTrue(Commands.startEnd(() -> left.runVolts(10), () -> left.runVolts(0.0)));
     controller
         .a()
         .whileTrue(Commands.startEnd(() -> right.runVolts(10), () -> right.runVolts(0.0)));

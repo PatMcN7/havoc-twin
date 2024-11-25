@@ -41,10 +41,13 @@ public class Shooter extends SubsystemBase {
         System.out.println("Shooter works");
 
         return instance = new Shooter(new ShooterIOSim());
+      } else if (Constants.currentMode.equals(Constants.Mode.REPLAY)) {
+        return instance = new Shooter(new ShooterIO() {});
       } else {
         return instance;
       }
     } else {
+
       return instance;
     }
   }

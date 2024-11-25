@@ -49,6 +49,8 @@ public class Arm extends SubsystemBase {
         System.out.println("Arm works");
         return instance = new Arm(new ArmIOSim());
 
+      } else if (Constants.currentMode.equals(Constants.Mode.REPLAY)) {
+        return instance = new Arm(new ArmIO() {});
       } else {
         return instance;
       }
