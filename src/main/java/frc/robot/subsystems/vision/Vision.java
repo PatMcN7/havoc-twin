@@ -5,6 +5,8 @@
 package frc.robot.subsystems.vision;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotState;
+
 import org.littletonrobotics.junction.Logger;
 
 public class Vision extends SubsystemBase {
@@ -20,5 +22,6 @@ public class Vision extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Vision", inputs);
-  }
+    RobotState.updateVision(inputs.fieldRelativePose.toPose2d());
+    }
 }

@@ -46,6 +46,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
+import frc.robot.RobotState;
 import frc.robot.subsystems.cartridge.Cartridge;
 import frc.robot.util.LocalADStarAK;
 import java.util.Optional;
@@ -54,10 +55,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
-import org.photonvision.EstimatedRobotPose;
-import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+
 
 public class Drive extends SubsystemBase {
   private static final double MAX_LINEAR_SPEED = Units.feetToMeters(15.5);
@@ -67,7 +65,7 @@ public class Drive extends SubsystemBase {
       Math.hypot(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0);
   private static final double MAX_ANGULAR_SPEED = MAX_LINEAR_SPEED / DRIVE_BASE_RADIUS;
 
-  PhotonCamera camera;
+  
   AprilTagFieldLayout layout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
   Transform3d robotToCam =
       new Transform3d(
@@ -76,7 +74,7 @@ public class Drive extends SubsystemBase {
               Units.inchesToMeters(-18.030),
               Units.inchesToMeters(7.693)),
           new Rotation3d(-90, 0, 180));
-  PhotonPoseEstimator photonPoseEstimator;
+
 
   static final Lock odometryLock = new ReentrantLock();
   private final GyroIO gyroIO;
@@ -111,14 +109,7 @@ public class Drive extends SubsystemBase {
     modules[2] = new Module(blModuleIO, 2);
     modules[3] = new Module(brModuleIO, 3);
 
-    switch (Constants.currentMode) {
-      case REAL:
-        camera = new PhotonCamera("Cam2Fnaf");
-        photonPoseEstimator =
-            new PhotonPoseEstimator(
-                layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camera, robotToCam);
-        photonPoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
-    }
+    
 
     // Start threads (no-op for each if no signals have been created)
     PhoenixOdometryThread.getInstance().start();
@@ -227,25 +218,7 @@ public class Drive extends SubsystemBase {
 
       // Apply update
       poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
-      switch (Constants.currentMode) {
-        case REAL:
-          var result = camera.getLatestResult();
-          Optional<EstimatedRobotPose> estimatedPose = photonPoseEstimator.update();
-
-          if (result.hasTargets()) {
-            if (result.getMultiTagResult().estimatedPose.isPresent) {
-              if (estimatedPose.isPresent()) {
-                Pose2d visionPose =
-                    new Pose2d(
-                        estimatedPose.get().estimatedPose.getX(),
-                        estimatedPose.get().estimatedPose.getY(),
-                        new Rotation2d(estimatedPose.get().estimatedPose.getRotation().getZ()));
-                addVisionMeasurement(visionPose, estimatedPose.get().timestampSeconds);
-                Logger.recordOutput("Vision Pose", visionPose);
-              }
-            }
-          }
-      }
+      RobotState.updatePoseOdom(poseEstimator.getEstimatedPosition());
     }
   }
 
