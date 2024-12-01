@@ -38,6 +38,7 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.uptake.Uptake;
+import frc.robot.subsystems.vision.Vision;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -58,7 +59,7 @@ public class RobotContainer {
   private Drive drive;
   private Shooter shooter = Shooter.getInstance();
   // private Flywheel flywheel = Flywheel.getInstance();
-
+  private Vision vision = Vision.getInstance();
   private Cartridge cartridge = Cartridge.getInstance();
   private Uptake uptake = Uptake.getInstance();
   private Beltwrap beltwrap = Beltwrap.getInstance();

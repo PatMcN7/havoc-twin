@@ -44,18 +44,15 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 import frc.robot.RobotState;
 import frc.robot.subsystems.cartridge.Cartridge;
 import frc.robot.util.LocalADStarAK;
-import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
-
 
 public class Drive extends SubsystemBase {
   private static final double MAX_LINEAR_SPEED = Units.feetToMeters(15.5);
@@ -65,7 +62,6 @@ public class Drive extends SubsystemBase {
       Math.hypot(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0);
   private static final double MAX_ANGULAR_SPEED = MAX_LINEAR_SPEED / DRIVE_BASE_RADIUS;
 
-  
   AprilTagFieldLayout layout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
   Transform3d robotToCam =
       new Transform3d(
@@ -74,7 +70,6 @@ public class Drive extends SubsystemBase {
               Units.inchesToMeters(-18.030),
               Units.inchesToMeters(7.693)),
           new Rotation3d(-90, 0, 180));
-
 
   static final Lock odometryLock = new ReentrantLock();
   private final GyroIO gyroIO;
@@ -108,8 +103,6 @@ public class Drive extends SubsystemBase {
     modules[1] = new Module(frModuleIO, 1);
     modules[2] = new Module(blModuleIO, 2);
     modules[3] = new Module(brModuleIO, 3);
-
-    
 
     // Start threads (no-op for each if no signals have been created)
     PhoenixOdometryThread.getInstance().start();

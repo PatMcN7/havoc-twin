@@ -6,7 +6,6 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
-
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
@@ -22,7 +21,13 @@ public class VisionIOPhoton implements VisionIO {
   public VisionIOPhoton() {
     aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
     camera = new PhotonCamera("cam-1NGA");
-    robotToCam = new Transform3d(new Translation3d(Units.inchesToMeters(0.037),Units.inchesToMeters(-18.030),Units.inchesToMeters(7.693)), new Rotation3d(-90,0,180));
+    robotToCam =
+        new Transform3d(
+            new Translation3d(
+                Units.inchesToMeters(0.037),
+                Units.inchesToMeters(-18.030),
+                Units.inchesToMeters(7.693)),
+            new Rotation3d(-90, 0, 180));
     poseEstimator =
         new PhotonPoseEstimator(
             aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camera, robotToCam);
